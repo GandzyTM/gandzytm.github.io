@@ -1,12 +1,19 @@
 var btnSave = document.getElementById('btn-save');
 var btnDel = document.getElementById('del-all');
 
-const chbNotCall = document.getElementById('checkbox1');
-const chbIReadIt = document.getElementById('checkbox2');
-const chbIDontChoose = document.getElementById("checkbox3");
-const chbIConfirm = document.getElementById('checkbox4');
-const chbImOver = document.getElementById("checkbox5");
-const chbThisTask = document.getElementById('checkbox6');
+// var chbNotCall = document.getElementById('checkbox1');
+// var chbIReadIt = document.getElementById('checkbox2');
+// var chbIDontChoose = document.getElementById("checkbox3");
+// var chbIConfirm = document.getElementById('checkbox4');
+// var chbImOver = document.getElementById("checkbox5");
+// var chbThisTask = document.getElementById('checkbox6');
+
+var chbNotCall = document.getElementById('not-call');
+var chbIReadIt = document.getElementById('I-read-it');
+var chbIDontChoose = document.getElementById("I-dont-choose");
+var chbIConfirm = document.getElementById('I-confirm');
+var chbImOver = document.getElementById("Im-over-12-years-old");
+var chbThisTask = document.getElementById('this-task-is-completed');
 
 if (getCookie('poll')) { //if the poll on this page has already taken place
   setCondition(chbNotCall);
@@ -16,7 +23,7 @@ if (getCookie('poll')) { //if the poll on this page has already taken place
   setCondition(chbImOver);
   setCondition(chbThisTask);
 
-  btn.disabled = true;
+  btnSave.disabled = true;
 }
 
 btnSave.addEventListener('click', async _ => {
@@ -33,7 +40,7 @@ btnSave.addEventListener('click', async _ => {
   saveState(chbImOver);
   saveState(chbThisTask);
 
-  btn.disabled = true;
+  btnSave.disabled = true;
 });
 
 btnDel.addEventListener('click', async _ => {
@@ -59,14 +66,14 @@ function saveState(name) { //accepts a variable with the checkbox as an argument
   date = getLifetime();
 
   if (name.checked) {
-    let nameCoockie = name.id;
-    setCookie(nameCoockie, 1, {
-      expires: date,
+    let nameCookie = name.id;
+    setCookie(nameCookie, 1, {
+      expires: date
     })
   } else {
-    let nameCoockie = name.id;
-    setCookie(nameCoockie, 0, {
-      expires: date,
+    let nameCookie = name.id;
+    setCookie(nameCookie, 0, {
+      expires: date
     })
   }
 
@@ -86,7 +93,7 @@ function deleteAllCookies() {
   chbImOver.checked = false;
   chbThisTask.checked = false;
 
-  btn.disabled = false;
+  btnSave.disabled = false;
 }
 
 if (getCookie('city')) {
@@ -124,18 +131,17 @@ function getCookie(name) {
 }
 
 function setCookie(name, value, options = {}) {
-
+  //This function set cookie
   options = {
     path: '/',
     ...options
   };
 
-  if (options.expires) {
+  if (options.expires.toUTCString) {
     options.expires = options.expires.toUTCString();
   }
 
   let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
-
   for (let optionKey in options) {
     updatedCookie += "; " + optionKey;
     let optionValue = options[optionKey];
@@ -143,7 +149,6 @@ function setCookie(name, value, options = {}) {
       updatedCookie += "=" + optionValue;
     }
   }
-
   document.cookie = updatedCookie;
 }
 
