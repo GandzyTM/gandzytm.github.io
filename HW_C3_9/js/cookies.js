@@ -91,7 +91,7 @@ function deleteAllCookies() {
 
 if (getCookie('city')) {
   console.log('block undefined')
-  let inp = document.getElementById('input-city');
+  let inp = document.getElementById("input-city");
   inp.remove();
 
   let p = document.createElement('p');
@@ -108,7 +108,7 @@ if (getCookie('city')) {
 } else {
   console.log('block defined')
 
-  let inp = document.getElementById('input-city');
+  let inp = document.getElementById("input-city");
   inp.oninput = () => {
     setCookie('city', inp.value, {
       'max-age': 3600 // cookie live 10 min
@@ -124,17 +124,14 @@ function getCookie(name) {
 }
 
 function setCookie(name, value, options = {}) {
-  //This function set cookie
+
   options = {
     path: '/',
     ...options
   };
 
-  if (options.expires.toUTCString) {
-    options.expires = options.expires.toUTCString();
-  }
-
   let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+
   for (let optionKey in options) {
     updatedCookie += "; " + optionKey;
     let optionValue = options[optionKey];
@@ -142,8 +139,10 @@ function setCookie(name, value, options = {}) {
       updatedCookie += "=" + optionValue;
     }
   }
+
   document.cookie = updatedCookie;
 }
+
 
 function deleteCookie(name) {
   setCookie(name, "", {
