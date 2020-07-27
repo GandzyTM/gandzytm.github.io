@@ -1,19 +1,12 @@
 var btnSave = document.getElementById('btn-save');
 var btnDel = document.getElementById('del-all');
 
-// var chbNotCall = document.getElementById('checkbox1');
-// var chbIReadIt = document.getElementById('checkbox2');
-// var chbIDontChoose = document.getElementById("checkbox3");
-// var chbIConfirm = document.getElementById('checkbox4');
-// var chbImOver = document.getElementById("checkbox5");
-// var chbThisTask = document.getElementById('checkbox6');
-
-var chbNotCall = document.getElementById('not-call');
-var chbIReadIt = document.getElementById('I-read-it');
-var chbIDontChoose = document.getElementById("I-dont-choose");
-var chbIConfirm = document.getElementById('I-confirm');
-var chbImOver = document.getElementById("Im-over-12-years-old");
-var chbThisTask = document.getElementById('this-task-is-completed');
+var chbNotCall = document.getElementById('checkbox1');
+var chbIReadIt = document.getElementById('checkbox2');
+var chbIDontChoose = document.getElementById("checkbox3");
+var chbIConfirm = document.getElementById('checkbox4');
+var chbImOver = document.getElementById("checkbox5");
+var chbThisTask = document.getElementById('checkbox6');
 
 if (getCookie('poll')) { //if the poll on this page has already taken place
   setCondition(chbNotCall);
