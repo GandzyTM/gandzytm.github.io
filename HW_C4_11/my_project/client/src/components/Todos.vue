@@ -1,28 +1,40 @@
 <template>
   <div class="container">
     <div class="col-sm-10">
-      <h1>Задачи</h1>
-      <p> Число невыполненных задач: {{n_uncompleted}} <br>
-        Число выполненных задач: {{n_completed}} </p>
-      <confirmation
-        :message="confirmationMessage"
-        :showDismissibleAlert = "showConfirmation"
-        @closed="confClosed">
-      </confirmation>
-      <button type="button" id="task-add" class="btn btn-success btn-sm align-left d-block"
-              v-b-modal.todo-modal>Добавить задачу</button>
+      <h1>Задачи: {{ cntTasksTrue + cntTasksFalse }}</h1>
+      <confirmation :message="message"
+                    v-if="showConfirmation" @new_trigger="show_alert"></confirmation>
+      <div>
+      </div>
+      <div class="d-flex flex-row justify-content-between mb-4">
+        <button type="button" id="task-add" class="btn btn-success btn-sm align-left d-block"
+                v-b-modal.todo-modal>
+          Добавить задачу
+        </button>
+        <button type="button" id="task-del" class="btn btn-danger btn-sm align-left d-block"
+                @click="delete_all">
+          Удалить все задачи
+        </button>
+      </div>
+
       <table class="table table-dark table-stripped table-hover">
         <thead class="thead-light">
         <tr>
+          <th><font color="green">Выполнено:</font></th>
+          <th><font color="green">{{ cntTasksTrue }}</font></th>
+          <th><font color="red">Не выполнено:</font></th>
+          <th><font color="red">{{ cntTasksFalse }}</font></th>
+        </tr>
+        <tr>
           <th>Uid</th>
           <th>Описание</th>
-          <th>Выполнена?</th>
+          <th>Статус</th>
           <th></th>
         </tr>
         </thead>
 
         <tbody>
-        <tr v-for="(todo, index) in todos" :key="index">
+        <tr v-for="(todo,index) in todos" :key="index">
           <td class="todo-uid">{{ todo.uid }}</td>
           <td>{{ todo.description }}</td>
           <td>
@@ -31,76 +43,78 @@
           </td>
           <td>
             <div class="btn-group" role="group">
-              <button type="button" class="btn btn-secondary btn-sm"
+              <button type="button"
+                      class="btn btn-secondary btn-sm"
                       v-b-modal.todo-update-modal
-                      @click="updateTodo(todo)">
-                Обновить</button>
+                      @click="updateTodo(todo)">Обновить</button>
               &nbsp;
               <button type="button"
                       class="btn btn-danger btn-sm"
-                      @click="deleteTodo(todo)">
-                X
-              </button>
+                      @click="deleteTodo(todo)">X</button>
             </div>
           </td>
         </tr>
         </tbody>
+
       </table>
 
-    </div>
-    <b-modal ref="addTodoModal"
-             id="todo-modal"
-             title="Добавить задачу"
-             hide-footer>
-      <b-form @submit="onSubmit" @reset="onReset" class="w-100">
-        <b-form-group id="form-description-group"
-                      label="Описание:"
-                      label-for="form-description-input">
-          <b-form-input id="form-description-input"
-                        type="text"
-                        v-model="addTodoForm.description"
-                        required
-                        placeholder="Завести задачу">
-          </b-form-input>
-        </b-form-group>
-        <b-form-group id="form-complete-group">
-          <b-form-checkbox-group v-model="addTodoForm.is_completed" id="form-checks">
-            <b-form-checkbox value="true">Задача выполнена?</b-form-checkbox>
-          </b-form-checkbox-group>
-        </b-form-group>
-        <b-button type="submit" variant="primary">Добавить</b-button>
-        <b-button type="reset" variant="danger">Сброс</b-button>
-      </b-form>
-    </b-modal>
-    <b-modal ref="updateTodoModal"
-             id="todo-update-modal"
-             title="Update"
-             hide-footer>
-      <b-form @submit="onUpdateSubmit" @reset="onUpdateReset" class="w-100">
-        <b-form-group id="form-update-description-group"
-                      label="Описание:"
-                      label-for="form-update-description-input">
-          <b-form-input id="form-update-description-input"
-                        type="text"
-                        v-model="updateTodoForm.description"
-                        required>
-          </b-form-input>
-        </b-form-group>
-        <b-form-group id="form-update-complete-group">
-          <b-form-checkbox-group v-model="updateTodoForm.is_completed" id="form-update-checks">
-            <b-form-checkbox value="true">Задача выполнена?</b-form-checkbox>
-          </b-form-checkbox-group>
-        </b-form-group>
-        <b-button-group>
-          <b-button type="submit" variant="primary">Обновить</b-button>
+      <b-modal ref="addTodoModal"
+               id="todo-modal"
+               title="Добавить задачу"
+               hide-footer
+      >
+        <b-form @submit="onSubmit" @reset="onReset" class="w-100">
+          <b-form-group id="form-description-group"
+                        label="Описание:"
+                        label-for="form-description-input">
+            <b-form-input id="form-description-input"
+                          type="text"
+                          v-model="addTodoForm.description"
+                          required
+                          placeholder="Завести задачу">
+            </b-form-input>
+          </b-form-group>
+
+          <b-form-group id="form-complete-group">
+            <b-form-checkbox-group v-model="addTodoForm.is_completed" id="form-checks">
+              <b-form-checkbox value="true">Задача выполнена?</b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-form-group>
+          <b-button type="submit" variant="primary">Добавить</b-button>
           <b-button type="reset" variant="danger">Сброс</b-button>
-        </b-button-group>
-      </b-form>
-    </b-modal>
+        </b-form>
+      </b-modal>
+      <b-modal ref="updateTodoModal"
+               id="todo-update-modal"
+               title="Update"
+               hide-footer>
+        <b-form @submit="onUpdateSubmit" @reset="onUpdateReset" class="w-100">
+          <b-form-group id="form-update-description-group"
+                        label="Описание:"
+                        label-for="form-update-description-input">
+            <b-form-input id="form-update-description-input"
+                          type="text"
+                          v-model="updateTodoForm.description"
+                          required>
+            </b-form-input>
+          </b-form-group>
+          <b-form-group id="form-update-complete-group">
+            <b-form-checkbox-group v-model="updateTodoForm.is_completed" id="form-update-checks">
+              <b-form-checkbox value="true">Задача выполнена?</b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-form-group>
+          <b-button-group>
+            <b-button type="submit" variant="primary">Обновить</b-button>
+            <b-button type="reset" variant="danger">Сброс</b-button>
+          </b-button-group>
+        </b-form>
+      </b-modal>
+    </div>
   </div>
 </template>
 
 <script>
+
 import Confirmation from './Confirmation.vue';
 
 export default {
@@ -116,36 +130,31 @@ export default {
         uid: 0,
         description: '',
         is_completed: [],
-        on_reset: 0,
       },
-      confirmationMessage: '',
+      message: '',
       showConfirmation: false,
-      n_completed: 0,
-      n_uncompleted: 0,
+      cntTasksTrue: 0,
+      cntTasksFalse: 0,
     };
   },
   methods: {
-    confClosed() {
-      this.showConfirmation = false;
-    },
     getTodos() {
-      this.n_uncompleted = 0;
-      this.n_completed = 0;
       this.todos = [];
+      this.cntTasksTrue = 0;
+      this.cntTasksFalse = 0;
       for (let i = 0; i < localStorage.length; i += 1) {
-        const keyItem = Number(localStorage.key(i));
-        // в todos добавляем задачи только с числовым ключом keyItem
-        const arr = localStorage.getItem(keyItem) ? JSON.parse(localStorage.getItem(keyItem)) : [];
-        if (arr.length !== 0) {
-          this.todos.push(arr);
-          // определение к-ва выполненных и невыполненных задач
-          if (arr.is_completed) {
-            this.n_completed = this.n_completed === undefined ? 0 : this.n_completed + 1;
+        const keyTask = localStorage.key(i);
+        if (keyTask.slice(0, 5) === 'task-') {
+          const parseLocalStorage = JSON.parse(localStorage.getItem(keyTask));
+          this.todos.push(parseLocalStorage);
+          if (parseLocalStorage.is_completed) {
+            this.cntTasksTrue += 1;
           } else {
-            this.n_uncompleted = this.n_uncompleted === undefined ? 0 : this.n_uncompleted + 1;
+            this.cntTasksFalse += 1;
           }
         }
       }
+      this.todos.sort((a, b) => a.uid - b.uid);
     },
     resetForm() {
       this.addTodoForm.description = '';
@@ -156,21 +165,29 @@ export default {
     onSubmit(event) {
       event.preventDefault();
       this.$refs.addTodoModal.hide();
-      //  новый ИД равен длине массива или максимальному ключу задачи, увеличенному на единицу
-      let newID = localStorage.length;
+      let j = 0;
+      let taskKey = '';
+      let maxKey = 0;
       for (let i = 0; i < localStorage.length; i += 1) {
-        const keyItem = Number(localStorage.key(i));
-        newID = (keyItem && newID <= keyItem) ? keyItem + 1 : newID;
+        taskKey = localStorage.key(i);
+        if (taskKey.slice(0, 5) === 'task-') {
+          j = Number(taskKey.substr(5));
+          if (j > maxKey) {
+            maxKey = j;
+          }
+        }
       }
-      const addOdj = {
-        uid: newID,
+      const newKey = `task-${maxKey + 1}`;
+      const requestData = {
         description: this.addTodoForm.description,
         is_completed: this.addTodoForm.is_completed.length > 0,
+        uid: String(maxKey + 1),
       };
-      localStorage.setItem(newID, JSON.stringify(addOdj));
+      localStorage.setItem(newKey, JSON.stringify(requestData));
       this.getTodos();
-      this.confirmationMessage = `Задача "${this.addTodoForm.description}" добавлена`;
+      this.message = `Задача "${requestData.description}" добавлена`;
       this.showConfirmation = true;
+      this.showDismissibleAlert = true;
       this.resetForm();
     },
     onReset(event) {
@@ -181,57 +198,42 @@ export default {
     updateTodo(todo) {
       this.updateTodoForm.uid = todo.uid;
       this.updateTodoForm.description = todo.description;
-      this.updateTodoForm.is_completed = todo.is_completed;
       if (todo.is_completed) {
         this.updateTodoForm.is_completed = [true];
-        this.showConfirmation = true;
       }
-      this.showConfirmation = true;
     },
     onUpdateSubmit(event) {
       event.preventDefault();
       this.$refs.updateTodoModal.hide();
-      this.confirmationMessage = '';
-      const updOdj = {
-        uid: this.updateTodoForm.uid,
+      const requestData = {
         description: this.updateTodoForm.description,
         is_completed: this.updateTodoForm.is_completed.length > 0,
+        uid: this.updateTodoForm.uid,
       };
-      if (localStorage.getItem(updOdj.uid) === null) {
-        alert('Запись была удалена другим пользователем'); // eslint-disable-line no-alert
-        this.showConfirmation = true;
-        this.confirmationMessage = 'Обновляемая запись была удалена другим пользователем';
-      } else {
-        localStorage.setItem(updOdj.uid, JSON.stringify(updOdj));
-        if (this.updateTodoForm.on_reset === 1) {
-          this.confirmationMessage += `${this.updateTodoForm.description}`;
-          this.showConfirmation = true;
-        } else if (updOdj.is_completed) {
-          this.confirmationMessage = `Задача "${updOdj.description}" выполнена`;
-          this.showConfirmation = true;
-        } else {
-          this.confirmationMessage = `Задача  "${updOdj.description}" обновлена`;
-          this.showConfirmation = true;
-        }
-        this.showConfirmation = true;
-      }
+      localStorage.setItem(`task-${requestData.uid}`, JSON.stringify(requestData));
+      this.message = 'Задача обновлена';
       this.showConfirmation = true;
       this.getTodos();
     },
     onUpdateReset(event) {
       event.preventDefault();
-      this.$refs.addTodoModal.hide();
-      this.updateTodoForm.on_reset = 1;
-      const modife = this.updateTodoForm.description;
+      this.$refs.updateTodoModal.hide();
       this.resetForm();
-      this.confirmationMessage = `Задача ${modife} заменена на ${this.updateTodoForm.description}`;
-      this.showConfirmation = true;
     },
     deleteTodo(todo) {
-      this.confirmationMessage = `Задача "${todo.description}" удалена из списка`;
-      this.showConfirmation = true;
-      localStorage.removeItem(todo.uid);
+      localStorage.removeItem(`task-${todo.uid}`);
+      this.message = 'Задача удалена из списка';
       this.getTodos();
+      this.showConfirmation = true;
+    },
+    show_alert() {
+      this.showConfirmation = !this.showConfirmation;
+    },
+    delete_all() {
+      localStorage.clear();
+      this.todos = [];
+      this.cntTasksTrue = 0;
+      this.cntTasksFalse = 0;
     },
   },
   components: {
@@ -239,16 +241,13 @@ export default {
   },
   created() {
     this.getTodos();
-    // если нет сообщения,то не выводим аллерт
-    this.showConfirmation = false;
   },
 };
 </script>
 
 <style>
-button#task-add {
-  margin-top: 20px;
-  margin-bottom: 20px;
+button#task-add#task-del {
+  margin: 20px;
 }
 h1, td {
   text-align: left;
