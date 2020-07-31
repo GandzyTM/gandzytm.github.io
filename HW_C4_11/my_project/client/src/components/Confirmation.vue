@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-alert variant="success" show="10" dismissible @dismissed='showalert'>{{message}}
+    <b-alert variant="success" show="10" dismissible @dismissed='showAlert'>{{message}}
     </b-alert>
   </div>
 </template>
@@ -9,7 +9,7 @@
 export default {
   props: ['message'],
   methods: {
-    showalert() {
+    showAlert() {
       this.$emit('new_trigger');
     },
   },
