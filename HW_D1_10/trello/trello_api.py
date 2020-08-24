@@ -2,12 +2,12 @@ import sys
 import requests
 
 auth_params = {
-    'key': "cd6c3397613cbdf12ed90a0363e5d002",
-    'token': "725dce3ead219a9a1a22d00735ffa06043cacb3661f4d28d96108eb9bdc03c91",
+    'key': "***",
+    'token': "***",
 }
 
 base_url = "https://api.trello.com/1/{}"
-board_id = 'D0QtTj1P'
+board_id = '***'
 
 # name текущее название колонки
 def update_label(column_id, name):
