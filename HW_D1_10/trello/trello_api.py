@@ -106,9 +106,3 @@ if __name__ == "__main__":
         move(sys.argv[2], sys.argv[3])
     elif sys.argv[1] == 'create_column':
         create_column(sys.argv[2])
-
-
-# python trello.py create 'Сделать из мухи слона' 'Моя колонка'
-# python trello.py move 'Изучить Python' 'Нужно сделать'
-# python trello.py read
-# python trello.py create_column 'Мой архив'
