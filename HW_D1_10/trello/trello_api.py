@@ -98,7 +98,6 @@ def find_name(name_task):
     return tasks_id
 
 if __name__ == "__main__":
-    # print(sys.argv[0],"arv0")
     if len(sys.argv) <= 2:
         read()
     elif sys.argv[1] == 'create':
