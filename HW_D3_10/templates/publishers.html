@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Publishers</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
+<body>
+{% for publisher in publishers %}
+    <ul class="list-group">
+        <li class="list-group-item">
+            {{ publisher.name }}
+            <ul class="list-group">
+                {% for book in publisher.books.all %}
+                    <li class="list-group-item">
+                        {{ book.title }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+{% endfor %}
+
+</body>
+</html>
